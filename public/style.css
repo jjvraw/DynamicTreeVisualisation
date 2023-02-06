@@ -1,0 +1,56 @@
+html, body { height: 100%; }
+
+body {
+    background: #21282b;
+}
+
+@font-face {
+    font-family: "San Francisco";
+    font-weight: 400;
+    src: url("https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-regular-webfont.woff");
+  }
+
+.tbl {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button {
+    border: 2px solid;
+    border-color: #c6e2e9;
+    color: #c6e2e9;
+    background: none;
+    padding: 20px;
+    text-align: center;
+    font: inherit;
+    font-size: 25px;
+    display: inline-block;
+    margin: 4px 2px;
+    height: 170px;
+    width: 170px;
+    border-radius: 50%;
+    position: absolute;
+    font-family:'Courier New', monospace;
+    text-decoration: none;
+    transition: 0.4s ease;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.button:after {
+    background: #c6e2e9;
+    color: black;
+    transition: 0.3s ease;
+    content: '';
+    position: absolute;
+    z-index: -1;
+}
+
+.fade:hover {
+    background: #c6e2e9;
+    color: black;
+}
+
+
