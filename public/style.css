@@ -10,7 +10,7 @@ body {
     src: url("https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-regular-webfont.woff");
   }
 
-.tbl {
+.table-container {
     height: 100%;
     display: flex;
     align-items: center;
@@ -53,4 +53,12 @@ body {
     color: black;
 }
 
+@keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 
