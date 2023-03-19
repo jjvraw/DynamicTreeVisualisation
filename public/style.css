@@ -1,20 +1,63 @@
-html, body { height: 100%; }
-
 body {
     background: #21282b;
+    font-family:'Courier New', monospace;
 }
 
-@font-face {
-    font-family: "San Francisco";
-    font-weight: 400;
-    src: url("https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-regular-webfont.woff");
-  }
+#fade-out-button {
+    position: fixed;
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
 
-.table-container {
+.svg-container {
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    height: 100%;
+}
+
+.tbl {
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.new-list-button, .remove-single-node, .remove-all-nodes {
+    border: 1px solid;
+    border-color: #c6e2e9;
+    color: #c6e2e9;
+    background: none;
+    text-align: center;
+    /* justify-content: center; */
+    font: inherit;
+    font-size: 15px;
+    display: inline-block;
+    margin: 4px 2px;
+    height: 40px;
+    width: 200px;
+    border-radius: 5%;
+    position: relative;
+    transition: 0.4s ease;
+    z-index: 1;
+    overflow: hidden;
+
+}
+
+.buttons-div {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center
+}
+
+.new-list-button:after, .remove-single-node:after, .remove-all-nodes:after{
+    background: #c6e2e9;
+    color: black;
+    transition: 0.3s ease;
+    content: '';
+    position: absolute;
+    z-index: -1;
 }
 
 .button {
@@ -31,8 +74,7 @@ body {
     height: 170px;
     width: 170px;
     border-radius: 50%;
-    position: absolute;
-    font-family:'Courier New', monospace;
+    position: inherit;
     text-decoration: none;
     transition: 0.4s ease;
     z-index: 1;
@@ -54,11 +96,11 @@ body {
 }
 
 @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
+  from {
+    opacity: 0;
   }
+  to {
+    opacity: 1;
+  }
+}
 

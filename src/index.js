@@ -1,57 +1,113 @@
 import {Heap}from './Heap.js';
 
-// Numbers to be inserted into heap
-var numbers = [11, 9, 8, 18, 7, 16, 6, 17, 3],
-    numbersIndex = 0;
-
-// while(numbers.length < 250){
-//     var r = Math.floor(Math.random() * 100) + 1;
-//     if(!numbers.includes(r)) numbers.push(r);
-// }
-
-// Construct Heap 
+// Init Heap 
 var heap = new Heap(); 
+var numbers;
 
-// Margins 
-var margin = { top: 40, right: 30, bottom: 50, left: 30 }, 
-    width = 660 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
-
-// Append svg  
-var svg = d3.select("body").
-            append("svg").
-            attr("width", width + margin.right + margin.left).
-            attr("height", height + margin.top + margin.bottom)
-
-var g = svg.append("g").
-            attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-// build();
 d3.select('#fade-out-button').on('click', buildTable);
 
-function buildTable() {
+
+
+async function buildTable() {
 
     // Fade out button, and remove from div
     d3.select('#fade-out-button').
-        attr("disabled", true).
+        attr('disabled', true).
         transition().
-        duration(800).
+        duration(500).
         style('opacity', 0)
+        
+        // .on('end', function() {
+        //     d3.select(this).remove();})
+
+    await delay(800)
+    d3.select('#fade-out-button').remove();
+
+    // Insert new button 
+
+    numbers = [];
+    while(numbers.length < 23){
+        var r = Math.floor(Math.random() * 100) + 1;
+        if(!numbers.includes(r)) numbers.push(r);
+    }
+
 
     // Build Table
-            console.log('hi')
+    var data = [ numbers ];
+    
+      var table = d3.select('#table-container')
+        .append('table')
+        .style('border-collapse', 'separate')
+        .style('border', '0');
+    
+      var rows = table.selectAll('tr')
+        .data(data)
+        .enter()
+        .append('tr');
+    
+      var cells = rows.selectAll('td')
+        .data(function(d) { return d; })
+        .enter()
+        .append('td')
+        .style('opacity', '0')
+        .style('border-radius', '10px')
+        .style('padding', '10px')
+        .text(function(d) { return d; })
+        .attr('class', 'cells')
+        .attr('id', function(d) {
+            return 'cell' + d
+        });
+
+        var tds = d3.selectAll('.cells').nodes();
+        for (var td of tds) {
+            td.style.color = '#c6e2e9'
+            td.style.border = 'solid #c6e2e9 1px'
+            d3.select(td).transition()
+                .duration(500)
+            .style('opacity', 1);
+            await delay(100);
+        }
+
+        await delay(100);
+        buildHeap();
+        
 };
 
-async function build() {
+async function buildHeap() {
 
-    var i = 0, duration = 400;
+    // Margins 
+    var margin = { top: 40, right: 30, bottom: 50, left: 30 }, 
+    width = 1000 - margin.left - margin.right,
+    height = 700 - margin.top - margin.bottom;
+
+    // Append svg  
+    var svg = d3.select('.svg-container').
+            append('svg').
+            attr('width', width + margin.right + margin.left).
+            attr('height', height + margin.top + margin.bottom)
+
+    var g = svg.append('g').
+            attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+    var i = 0, duration = 250;
+
+    // Insert restart button
+    d3.select('body')
+        .append('div')
+        .attr('class', 'buttons-div')
+        .append('button')
+        .attr('class', 'new-list-button fade')
+        .text('Generate new numbers')
+
+    d3.select('.new-list-button').on('click', newList);
 
     // Insert FIRST node in heap
-    var heapIn = heap.heapInsert(10); 
+    var num = numbers.shift(); 
+    var heapIn = heap.heapInsert(num); 
     for (const pair of heapIn) {}
     
     var data = { 
-        number: 10, 
+        number: num, 
         children: []
     };
 
@@ -66,23 +122,29 @@ async function build() {
     var mappedData = treemap(root);
 
     // Enters new nodes as groups, and appends circle for visual
-    var node = g.selectAll(".node").data(mappedData.descendants()).
-                enter().append("g").
-                attr("class", "node").
-                attr("transform", function (d) {
+    var node = g.selectAll('.node').data(mappedData.descendants()).
+                enter().append('g').
+                attr('class', 'node').
+                attr('transform', function (d) {
                     d.x0 = d.x; 
                     d.y0 = d.y;
-                    return "translate(" + d.x + "," + d.y + ")";
+                    return 'translate(' + d.x + ',' + d.y + ')';
                 }).
                 append('circle').
                 attr('class', 'node').
                 attr('r', 25).
-                style("fill", function(d) {
-                    return "#0e4677";
+                style('fill', function(d) {
+                    return '#c6e2e9';
                 });
+
+    d3.select('#cell' + num)
+        .style('background-color', '#c6e2e9')
+        .style('color', 'black')
+        .style('border', 'solid black 1px');
 
     // Loop through array of numbers 
     for (var element of numbers) { 
+
         
         // Create new node OBJECT
         var newNodeObj = {
@@ -150,8 +212,8 @@ async function build() {
         // Transition all nodes to correct location
         node.transition().      
             duration(duration).
-            attr("transform", function(d) {
-                return "translate(" + d.x + "," + d.y + ")";
+            attr('transform', function(d) {
+                return 'translate(' + d.x + ',' + d.y + ')';
             });
         
         g.selectAll('.link').lower();
@@ -162,21 +224,18 @@ async function build() {
                     select('text').
                     remove();
         g.selectAll('.node').
-                    append("text").
-                    attr("dy", ".35em").
+                    append('text').
+                    attr('dy', '.35em').
                     text(function (d) { return d.data.number; });
-
-
 
         await delay(duration);
         
-
         // Enter new links into parents prev position. 
         var newLinks = link.enter().
                         append('line').
-                        attr("class", "link").
-                        attr("stroke-width", 2).
-                        attr("stroke", 'black').
+                        attr('class', 'link').
+                        attr('stroke-width', 2).
+                        attr('stroke', '#a7bed3').
                         attr('x1', function(d) {
                             return parent.x;
                         }).
@@ -217,8 +276,8 @@ async function build() {
         var newNodes = node.enter().
                         append('g').
                         attr('class', 'node').
-                        attr("transform", function(d) {
-                            return "translate(" + parent.x + "," + parent.y + ")";
+                        attr('transform', function(d) {
+                            return 'translate(' + parent.x + ',' + parent.y + ')';
                         });
 
         // Merge both lists
@@ -228,30 +287,35 @@ async function build() {
         newNodes.append('circle').
             attr('class', 'node').
             attr('r', 25).
-            style("fill", function(d) {
-                return "#0e4677";
+            style('fill', function(d) {
+                return '#c6e2e9';
             });
+
+        // Highlight cell in table
+        d3.select('#cell' + element)
+            .style('background-color', '#c6e2e9')
+            .style('color', 'black')
+            .style('border', 'solid black 1px');
         
         // Transition new/entered nodes to actual position for animation effect
         newNodes.transition().
             duration(duration).
-            attr("transform", function(d) {
-                return "translate(" + d.x + "," + d.y + ")";
+            attr('transform', function(d) {
+                return 'translate(' + d.x + ',' + d.y + ')';
             })
         
         // Append new text related to each node's number
-        newNodes.append("text").
+        newNodes.append('text').
+            attr('dy', '.35em').
             text(function (d) { return d.data.number;});
 
 
         // Update the node attributes and style
         allNodes.select('circle.node').
             attr('r', 25).
-            style("fill", function(d) {
-                return "#0e4677";
+            style('fill', function(d) {
+                return '#c6e2e9';
             });
-
-        
 
         // Insert in heap
         heapIn = heap.heapInsert(element);
@@ -259,9 +323,8 @@ async function build() {
         // Assign id to each group for searching purposes
         g.selectAll('.node').
             attr('id', function(d) {
-                return "n" + d.data.number;
+                return 'n' + d.data.number;
             })
-
 
         // pair key : [c, p, true/false]
         // where c is the index of the child, and p being the index of the parent in the heap array
@@ -283,28 +346,27 @@ async function build() {
             });
 
             // Highlight numbers being compared
-            await delay(duration/2); 
-            d3.select("#n" + c).selectAll('text').style('fill', 'white')
-            d3.select("#n" + p).selectAll('text').style('fill', 'white')
-            await delay(duration/2); 
+            await delay(duration); 
+            g.select('#n' + c).select('circle').style('fill', '#7aacac')
+            g.select('#n' + p).select('circle').style('fill', '#7aacac')
+            await delay(duration * 1.2); 
 
             if (pair[2]) {
 
                 // Translate c to p and change id
                 g.select('#n' + c).transition().duration(duration).
-                    attr("transform", function(d) {
-                        return "translate(" + parentNode.x + "," + parentNode.y + ")";
-                    }).attr('id', 'n' + p);
+                    attr('transform', function(d) {
+                        return 'translate(' + parentNode.x + ',' + parentNode.y + ')';
+                    }).attr('id', 'n' + p).select('circle').style('fill', '#c6e2e9');
 
                 tempNode = Object.assign({}, childNode);
 
                 // Translate p to c and change id
-                g.select('#n' + p).transition().duration(duration).
-                    attr("transform", function(d) {
-                        return "translate(" + tempNode.x + "," + tempNode.y + ")";
-                    }).attr('id', 'n' + c);
+                var n2 = g.select('#n' + p).transition().duration(duration).
+                    attr('transform', function(d) {
+                        return 'translate(' + tempNode.x + ',' + tempNode.y + ')';
+                    }).attr('id', 'n' + c).select('circle').style('fill', '#c6e2e9');
 
-                
                 await delay(duration);
                 
                 // Replace data.number of appropriate nodes #TODO do better
@@ -316,23 +378,25 @@ async function build() {
                 }
 
                 // Remove and append text #TODO do better 
-                g.selectAll("text").remove()
+                g.selectAll('text').remove()
                 g.selectAll('.node')
-                .append("text")
-                .attr("dy", ".35em")
+                .append('text')
+                .attr('dy', '.35em')
                 .text(function (d) { return d.data.number; })
                 .style('fill', 'black');
                 });
                     
                 allNodes.transition().duration(0).
-                    attr("transform", function(d) {
-                        return "translate(" + d.x + "," + d.y + ")";
-                    })
+                    attr('transform', function(d) {
+                        return 'translate(' + d.x + ',' + d.y + ')';
+                    });
+    
+                
             
             } else {
 
-                g.select("#n" + c).selectAll('text').style('fill', 'black');
-                g.select("#n" + p).selectAll('text').style('fill', 'black');
+                g.select('#n' + c).select('circle').style('fill', '#c6e2e9')
+                g.select('#n' + p).select('circle').style('fill', '#c6e2e9')
 
             }
 
@@ -340,18 +404,67 @@ async function build() {
 
         }
 
-
-        
-        
     }
 
-    // Store the old positions for transition.
-    nodes.forEach(function(d){
-            d.x0 = d.x;
-            d.y0 = d.y;
-        });
+
+    heapRemoval()
 
 }; 
+
+function heapRemoval() {
+
+    d3.select('.buttons-div')
+        .append('button')
+        .attr('class', 'remove-single-node fade')
+        .text('Remove single node')
+        .on('click', heapRemove);
+
+    d3.select('.buttons-div')
+        .append('button')
+        .attr('class', 'remove-all-nodes fade')
+        .text('Remove all nodes')
+        .on('click', function() {
+            while(heap.heap.length >= 0) {
+                heapRemove;
+            }
+        }); 
+
+}
+
+function heapRemove() {
+
+    var heapOut = heap.heapRemove();
+
+
+    for (var element of heapOut) {
+
+
+
+    }
+    
+}
+
+async function newList() {
+    d3.select('table').transition()
+        .duration(500)
+        .style('opacity', 0);
+
+    d3.select('svg').transition()
+    .duration(500)
+    .style('opacity', 0);
+
+    d3.select('.new-list-button').transition()
+    .duration(500)
+    .style('opacity', 0);
+
+    await delay(600);
+
+    d3.select('table').remove();
+    d3.select('svg').remove();
+    d3.select('.new-list-button').remove();
+
+    buildTable();
+}
 
 function delay(milliseconds){
     return new Promise(resolve => {
