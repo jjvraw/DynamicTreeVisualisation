@@ -24,7 +24,7 @@ body {
     justify-content: center;
 }
 
-.new-list-button, .remove-single-node, .remove-all-nodes {
+.new-list-button, .remove-single-node-button, .remove-all-nodes-button {
     border: 1px solid;
     border-color: #c6e2e9;
     color: #c6e2e9;

@@ -12,14 +12,14 @@ export class Heap {
         let node = new Node(freq); 
         this.heap.push(node); // insert new node in last position.
 
-        if (p >= 0 && this.heap[p].freqeuncy() > this.heap[c].freqeuncy())
+        if (p >= 0 && this.heap[p].getFrequency() > this.heap[c].getFrequency())
             do {
                 yield [c, p, true]; 
                 [this.heap[c], this.heap[p]] = [this.heap[p], this.heap[c]]; // swap
                 
                 c = p; 
                 p = Math.floor((c - 1) / 2); 
-            } while (p >= 0 && this.heap[p].freqeuncy() > this.heap[c].freqeuncy())
+            } while (p >= 0 && this.heap[p].getFrequency() > this.heap[c].getFrequency())
         else 
             yield [c, p, false];
 
@@ -42,13 +42,13 @@ export class Heap {
         while (c <= this.heap.length - 1) {
             
             if (this.heap[c+1] !== undefined)
-                if (this.heap[c].freqeuncy() >= this.heap[c+1].freqeuncy()) {
+                if (this.heap[c].getFrequency() >= this.heap[c+1].getFrequency()) {
                     c += 1;
                 }
 
-            if (this.heap[c].freqeuncy() <= this.heap[p].freqeuncy()) {
+            if (this.heap[c].getFrequency() <= this.heap[p].getFrequency()) {
 
-                yield [this.heap[c], this.heap[p], true]; 
+                yield [c, p, true]; 
 
                 [this.heap[c], this.heap[p]] = [this.heap[p], this.heap[c]];
 
@@ -56,13 +56,17 @@ export class Heap {
                 c = (2 * p) + 1;
 
             } else {
-                yield [this.heap[c], this.heap[p], false];  
+                yield [c, p, false];  
                 break;
             }
     
         }
 
          return rmvdNode; 
+    }
+
+    getHeap() {
+        return this.heap; 
     }
 
     // compair ;)
@@ -93,7 +97,7 @@ class Node {
         this.freq = freq;
     }  
 
-    freqeuncy() {
+    getFrequency() {
         return this.freq;
     }
 
