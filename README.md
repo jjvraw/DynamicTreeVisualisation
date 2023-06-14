@@ -4,7 +4,7 @@ This is a project that uses the D3.js library to create a dynamic min-heap visua
 
 ## Heap Insertion
 - Visual of heap insertion.
-![Visual of heap being built.](media/gifs/BuildHeap.gif)
+![Visual of heap being built.](media/gifs/buildheap.gif)
 
 ## Regenerate Numbers
 - Use of D3 to clear DOM.
