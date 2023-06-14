@@ -1,6 +1,6 @@
 # DynamicTreeVisualisation
 
-This is a project that uses the D3.js library to create a dynamic min-heap visualisation in a node-edge tree diagram. The 
+This is a project that uses the D3.js library to create a dynamic min-heap visualisation in a node-edge tree diagram. 
 
 ## Heap Insertion
 - Visual of heap insertion.
